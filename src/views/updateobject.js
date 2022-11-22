@@ -112,7 +112,7 @@ const UpdateObject = () => {
           </tbody>
         </table>
       </div>
-      <div style={{marginTop: '30px'}}>        
+      <div style={{marginTop: '100px'}}>        
         <table className='table'>
           <thead>
             <tr>
@@ -121,11 +121,13 @@ const UpdateObject = () => {
           </thead>
           <tbody>
             <tr className='has-head'>
-              <td>CURRENT VERSION</td>
+              <td>INFORMATION</td>
             </tr>
             <tr>
               <td>
-                <span className="font-20">1.00</span>
+                <div style={{width: '975px'}}>
+                  <textarea className='input-area'></textarea>
+                </div>
               </td>
             </tr>
           </tbody>

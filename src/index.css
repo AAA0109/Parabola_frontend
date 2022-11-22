@@ -132,6 +132,15 @@ a {
   border-radius: 3px;
 }
 
+.input-area {
+  min-width: 100%;
+  max-width: 100%;
+  max-height: 200px;
+  min-height: 200px;
+  background-color: #F9F9F9;
+  border: none;
+}
+
 .button {
   cursor: pointer;
 }
