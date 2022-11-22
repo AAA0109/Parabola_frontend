@@ -3,9 +3,6 @@ import { Link } from 'react-router-dom';
 import { Input } from '@material-ui/core';
 
 const Signin = () => {  
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
   return (
     <div className="container d-flex flex-column">
       <div className="menu">
