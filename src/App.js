@@ -30,7 +30,7 @@ function AppContainer() {
   return (
     <Router>
       <Switch>
-        <Route path="/home" exact component={Home} />
+        <Route path="/" exact component={Home} />
         <Route path="/project" exact component={Project} />
         <Route path="/members" exact component={Members} />
         <Route path="/signin" exact component={Signin} />
