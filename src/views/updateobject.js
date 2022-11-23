@@ -133,6 +133,11 @@ const UpdateObject = () => {
           </tbody>
         </table>
       </div>
+      <div className='buttons'>
+        <div className='save-btn'>Save</div>
+        <div className='delete-btn'>Delete</div>
+        <div className='cancel-btn'>Cancel</div>
+      </div>
     </div>
   )
 }

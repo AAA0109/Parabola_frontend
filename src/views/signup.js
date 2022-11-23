@@ -2,7 +2,18 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Input } from '@material-ui/core';
 
-const Signin = () => {  
+import userservice from '../api/userservice';
+
+const Signin = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [company, setCompany] = useState('');
+  const [role, setRole] = useState('');
+
+  const signup = () => {
+    userservice.signup(username, company, role);
+  }
+
   return (
     <div className="container d-flex flex-column">
       <div className="menu">
@@ -16,22 +27,22 @@ const Signin = () => {
         <div className="sign-up">
           <div className="input-group">
             <div className="input-label">Username:</div>
-            <Input className='input-text'/>
+            <Input className='input-text' value={username} onChange={e => setUsername(e.target.value)}/>
           </div>
           <div className="input-group">
             <div className="input-label">Password:</div>
-            <Input type="password" className='input-text'/>
+            <Input type="password" className='input-text' value={password} onChange={e => setPassword(e.target.value)}/>
           </div>
           <div className="input-group">
             <div className="input-label">Company:</div>
-            <Input type="password" className='input-text'/>
+            <Input className='input-text' value={company} onChange={e => setCompany(e.target.value)}/>
           </div>
           <div className="input-group">
             <div className="input-label">Role:</div>
-            <Input type="password" className='input-text'/>
+            <Input className='input-text' value={role} onChange={e => setRole(e.target.value)}/>
           </div>
           <div className='sign-btn-container'>
-            <div className="button">Sign UP</div>
+            <div className="button" onClick={signup}>Sign UP</div>
           </div>
         </div>
       </div>

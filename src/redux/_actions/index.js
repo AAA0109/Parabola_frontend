@@ -1,5 +1,5 @@
 import { Constants } from '../_constants';
-import api from '../../api';
+import api from '../../api/userservice';
 import utils from '../../utils';
 
 export const actions = {
