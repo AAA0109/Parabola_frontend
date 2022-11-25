@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Edit } from '@material-ui/icons';
 import { Input } from '@material-ui/core';
+import { useSelector } from "react-redux"
+import userservice from '../api/userservice';
 
 const Signin = () => {  
+  const [projects, setProjects] = useState('');
+  const { username, role, company } = useSelector(state => state.auth);
+
   const history = useHistory();
+
+  useEffect(() => {
+    if (username) {
+      const res = userservice.GetAllProjects(username);
+    }
+  }, [username])
 
   const goManage = () => {
     history.push('/project');
@@ -22,11 +33,11 @@ const Signin = () => {
       <div className="detail">
         <div className='detail-group'>
           <div className='detail-label'>COMPANY</div>
-          <div className='detail-value'>ROCKWELL GROUP</div>
+          <div className='detail-value'>{company}</div>
         </div>
         <div className='detail-group'>
           <div className='detail-label'>ROLE</div>
-          <div className='detail-value'>INTERIOR DESIGN</div>
+          <div className='detail-value'>{role}</div>
         </div>
       </div>
       <div className="main-content">

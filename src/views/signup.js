@@ -1,17 +1,36 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Input } from '@material-ui/core';
-
+import { Link, useHistory } from 'react-router-dom';
+import { Input, Snackbar } from '@material-ui/core';
+import {useAuth} from '../Auth';
 import userservice from '../api/userservice';
 
-const Signin = () => {
+const Signup = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [company, setCompany] = useState('');
   const [role, setRole] = useState('');
+  const [error, setError] = useState('');
+  
+  const history = useHistory();
+  const {auth} = useAuth();
 
-  const signup = () => {
-    userservice.signup(username, company, role);
+  const signup = async () => {
+    try {
+      if (!username || !password || !company || !role) {
+        setError('Fields are required!');
+        return;
+      }
+      await auth.signUp(username, password, company, role);
+      const res = await userservice.signup(username, company, role);
+      if (res.err) {
+        setError(res.err.message || 'Signup failed!');
+        return;
+      }
+      history.push('/signin');
+    } catch (ex) {
+      console.log(ex)
+      setError(ex.message || 'Signup failed!');
+    }
   }
 
   return (
@@ -46,8 +65,11 @@ const Signin = () => {
           </div>
         </div>
       </div>
+      <Snackbar open={!!error} autoHideDuration={6000} anchorOrigin={{vertical: 'top', horizontal: 'center'}} onClose={() => setError('')}>
+        <div className="error-msg">{error}</div>
+      </Snackbar>
     </div>
   )
 }
 
-export default Signin;
+export default Signup;
