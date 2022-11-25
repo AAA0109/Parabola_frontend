@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Input, Snackbar } from '@material-ui/core';
+import { Input } from '@material-ui/core';
 import {useAuth} from '../Auth';
 import { useDispatch } from "react-redux"
 import userservice from '../api/userservice';
@@ -9,7 +9,6 @@ import { actions } from '../redux/_actions';
 const Signin = () => {  
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -20,13 +19,13 @@ const Signin = () => {
       await auth.signIn(username, password);
       const res = await userservice.GetCompanyInfo(username);
       if (res.err) {
-        setError(res.err.message || 'Login failed!');
+        dispatch(actions.setError(res.err.message || 'Login failed!'));
         return ;
       }
       dispatch(actions.setUser(res.response));
       history.push('/home');
     } catch (ex) {
-      setError(ex.message || 'Login failed!');
+      dispatch(actions.setError(ex.message || 'Login failed!'));
     }
   }
 
@@ -54,9 +53,6 @@ const Signin = () => {
           </div>
         </div>
       </div>
-      <Snackbar open={!!error} autoHideDuration={6000} anchorOrigin={{vertical: 'top', horizontal: 'center'}} onClose={() => setError('')}>
-        <div className="error-msg">{error}</div>
-      </Snackbar>
     </div>
   )
 }

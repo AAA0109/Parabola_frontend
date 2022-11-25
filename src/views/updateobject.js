@@ -1,17 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Edit } from '@material-ui/icons';
 import { Input } from '@material-ui/core';
+import { useSelector, useDispatch } from "react-redux"
+import projectservice from '../api/projectservice';
+import objectservice from '../api/objectservice';
+import { actions } from '../redux/_actions';
 
-const UpdateObject = () => {  
+const UpdateObject = (props) => {
+  const [objectId, setObjectId] = useState('');
+  const [companies, setCompanies] = useState([]);
+  
+  const { username, role, company, projectName } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
   const history = useHistory();
-
-  const goTeamMembers = () => {
-    history.push('/members');
+  
+  useEffect(() => {
+    setObjectId(props.match.params.id);
+    if (!objectId || !username) return;
+    fetch();
+  }, [objectId, username])
+  
+  const fetchComapnies = async () => {
+    const res = await objectservice.GetAllCompaniesInObject(objectId);
+    if (!res || res.err) {
+      dispatch(actions.setError(res.err.message || 'Fetch CompaniesInObject failed!'));
+      return;
+    }
+    console.log(res.response.companiesList);
+    setCompanies(res.response.companiesList)
   }
 
-  const goUpdateObject = () => {
-    history.push('/updateobject');
+  const fetch = async () => {
+    await fetchComapnies();
   }
 
   return (
@@ -26,11 +47,11 @@ const UpdateObject = () => {
       <div className="detail">
         <div className='detail-group'>
           <div className='detail-label'>COMPANY</div>
-          <div className='detail-value'>ROCKWELL GROUP</div>
+          <div className='detail-value'>{company}</div>
         </div>
         <div className='detail-group'>
           <div className='detail-label'>ROLE</div>
-          <div className='detail-value'>INTERIOR DESIGN</div>
+          <div className='detail-value'>{role}</div>
         </div>
       </div>
       <div className="main-content project-content">
@@ -49,7 +70,7 @@ const UpdateObject = () => {
                 <td>
                   <div className='home-project-item'>
                     <span className="home-project-name font-20">OBJECT 1</span>
-                    <span className="icon-btn bg bg-dark" onClick={goUpdateObject}>
+                    <span className="icon-btn bg bg-dark">
                       <Edit />
                     </span>
                   </div>
@@ -71,26 +92,18 @@ const UpdateObject = () => {
               <tr className='has-head'>
                 <td colSpan={2}>AFFILIATED PARTIES</td>
               </tr>
-              <tr>
-                <td className='text-right'>1.</td>
-                <td>
-                  <div className='project-item bg'>
-                    <span>COMPANY2</span>
-                    <span>Role 1</span>
-                  </div>
-                </td>
-                <td className='text-center text-decoration'><div className="button">Remove</div></td>
-              </tr>
-              <tr>
-                <td className='text-right'>1.</td>
-                <td>
-                  <div className='project-item bg'>
-                    <span>COMPANY2</span>
-                    <span>Role 1</span>
-                  </div>
-                </td>
-                <td className='text-center text-decoration'><div className="button">Remove</div></td>
-              </tr>
+              {companies.map((company, idx) => (
+                <tr key={idx}>
+                  <td className='text-right'>{idx + 1}.</td>
+                  <td>
+                    <div className='project-item bg'>
+                      <span>{company.name}</span>
+                      <span>{company.role}</span>
+                    </div>
+                  </td>
+                  <td className='text-center text-decoration'><div className="button">Remove</div></td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -133,11 +146,11 @@ const UpdateObject = () => {
           </tbody>
         </table>
       </div>
-      <div className='buttons'>
+      {/* <div className='buttons'>
         <div className='save-btn'>Save</div>
         <div className='delete-btn'>Delete</div>
         <div className='cancel-btn'>Cancel</div>
-      </div>
+      </div> */}
     </div>
   )
 }

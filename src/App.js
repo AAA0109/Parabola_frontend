@@ -7,6 +7,7 @@ import {
   Route
 } from "react-router-dom";
 
+import { Snackbar } from '@material-ui/core';
 import { Provider } from "react-redux";
 import { store } from "Redux@Helpers";
 import Signin from './views/signin';
@@ -17,8 +18,11 @@ import Project from './views/project';
 import Members from './views/members';
 import Auth from './views/auth';
 import UpdateObject from './views/updateobject';
+import { actions } from './redux/_actions';
 
 function AppContainer() {
+  const { error } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
   
   return (
     <AuthProvider>
@@ -29,11 +33,14 @@ function AppContainer() {
           <Route path="/signin" exact component={Signin} />
           <Route path="/signup" exact component={Signup} />
           <Route path="/home" exact component={Home} />
-          <Route path="/project" exact component={Project} />
-          <Route path="/members" exact component={Members} />
-          <Route path="/updateobject" exact component={UpdateObject} />
+          <Route path="/project/:id" exact component={Project} />
+          <Route path="/members/:projectId" exact component={Members} />
+          <Route path="/updateobject/:id" exact component={UpdateObject} />
         </Switch>
       </Router>
+      <Snackbar open={!!error} autoHideDuration={6000} anchorOrigin={{vertical: 'top', horizontal: 'center'}} onClose={() =>  dispatch(actions.setError(''))}>
+        <div className="error-msg">{error}</div>
+      </Snackbar>
     </AuthProvider>
   );
 }

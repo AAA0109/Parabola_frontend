@@ -1,24 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Edit } from '@material-ui/icons';
+import { Edit, PlusOneRounded } from '@material-ui/icons';
 import { Input } from '@material-ui/core';
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import userservice from '../api/userservice';
+import { actions } from '../redux/_actions';
 
 const Signin = () => {  
-  const [projects, setProjects] = useState('');
+  const [projects, setProjects] = useState([]);
+  const [projectName, setProjectName] = useState('');
+  
   const { username, role, company } = useSelector(state => state.auth);
-
+  const dispatch = useDispatch();
   const history = useHistory();
 
   useEffect(() => {
-    if (username) {
-      const res = userservice.GetAllProjects(username);
-    }
+    fetchProjects();
   }, [username])
 
-  const goManage = () => {
-    history.push('/project');
+  const goManage = (id, name) => {
+    dispatch(actions.setProjectName(name));
+    history.push(`/project/${id}`);
+  }
+
+  const fetchProjects = async () => {
+    if (username) {
+      const res = await userservice.GetAllProjects(username);
+      if (!res || res.err) {
+        dispatch(actions.setError(res.err.message || 'Fetch Projects failed!'));
+        return;
+      }
+      setProjects(res.response.projectsList);
+    }
+  }
+
+  const createProject = async () => {
+    if (!projectName) return dispatch(actions.setError('Input Project Name'));
+    await userservice.CreateProject({company: { username, role, company }, projectName});
+    fetchProjects();
   }
 
   return (
@@ -51,29 +70,30 @@ const Signin = () => {
             </tr>
           </thead>
           <tbody>
+            {projects.map((project, idx) => (
+              <tr key={idx}>
+                <td>{idx + 1}.</td>
+                <td>
+                  <div className='home-project-item'>
+                    <span className="home-project-name bg bg-active">{project.name}</span>
+                    <span className="icon-btn bg bg-dark">
+                      <Edit />
+                    </span>
+                  </div>
+                </td>
+                <td className='text-center'><div className="button" onClick={() => goManage(project.id, project.name)}>Manage</div></td>
+              </tr>
+            ))}
             <tr>
-              <td>1.</td>
+              <td></td>
               <td>
                 <div className='home-project-item'>
-                  <span className="home-project-name bg bg-active">PROJECT 1</span>
-                  <span className="icon-btn bg bg-dark">
-                    <Edit />
+                  <span className="home-project-name"><Input className='input-text' value={projectName} onChange={e => setProjectName(e.target.value)}/></span>
+                  <span className="icon-btn bg bg-dark" onClick={createProject}>
+                    <span>+</span>
                   </span>
                 </div>
               </td>
-              <td className='text-center'><div className="button" onClick={() => goManage()}>Manage</div></td>
-            </tr>
-            <tr>
-              <td>2.</td>
-              <td>
-                <div className='home-project-item'>
-                  <span className="home-project-name bg bg-active">PROJECT 1</span>
-                  <span className="icon-btn bg bg-dark">
-                    <Edit />
-                  </span>
-                </div>
-              </td>
-              <td className='text-center'><div className="button" onClick={() => goManage()}>Manage</div></td>
             </tr>
           </tbody>
         </table>

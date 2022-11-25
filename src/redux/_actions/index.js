@@ -7,13 +7,21 @@ export const actions = {
   signout,
   verify,
   setUser,
-  setError
+  setError,
+  setProjectName
 }
 
 function setUser(data) {
   return {
     type: Constants.SETUSER,
     payload: data
+  }
+}
+
+function setProjectName(name) {
+  return {
+    type: Constants.SETPROJECTNAME,
+    projectName: name
   }
 }
 

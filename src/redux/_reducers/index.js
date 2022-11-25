@@ -17,8 +17,13 @@ function auth(state = initialState(), action) {
   switch (action.type) {
     case Constants.SETUSER:
       return {
-        ...user,
+        ...state,
         ...action.payload
+      }
+    case Constants.SETPROJECTNAME:
+      return {
+        ...state,
+        projectName: action.projectName
       }
     case Constants.SIGNIN_SUCCESS:
     case Constants.VERIFY:
