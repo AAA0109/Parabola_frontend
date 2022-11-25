@@ -35,7 +35,7 @@ function AppContainer() {
           <Route path="/home" exact component={Home} />
           <Route path="/project/:id" exact component={Project} />
           <Route path="/members/:projectId" exact component={Members} />
-          <Route path="/updateobject/:id" exact component={UpdateObject} />
+          <Route path="/updateobject/:projectId/:id" exact component={UpdateObject} />
         </Switch>
       </Router>
       <Snackbar open={!!error} autoHideDuration={6000} anchorOrigin={{vertical: 'top', horizontal: 'center'}} onClose={() =>  dispatch(actions.setError(''))}>

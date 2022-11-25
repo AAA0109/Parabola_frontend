@@ -3,17 +3,21 @@ import { Link, useHistory } from 'react-router-dom';
 import { Edit } from '@material-ui/icons';
 import { Input } from '@material-ui/core';
 import { useSelector, useDispatch } from "react-redux"
+import userservice from '../api/userservice';
 import projectservice from '../api/projectservice';
 import objectservice from '../api/objectservice';
 import { actions } from '../redux/_actions';
+import {useAuth} from '../Auth';
 
 const Project = (props) => {  
   const [projectId, setProjectId] = useState('');
+  const [projectName, setProjectName] = useState('');
   const [objectName, setObjectName] = useState('');
   const [companies, setCompanies] = useState([]);
   const [objects, setObjects] = useState([]);
+  const {auth} = useAuth();
   
-  const { username, role, company, projectName } = useSelector(state => state.auth);
+  const { username, role, company } = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -42,9 +46,24 @@ const Project = (props) => {
     setObjects(res.response.objectsList)
   }
 
+  const fetchProjects = async () => {
+    if (username) {
+      const res = await userservice.GetAllProjects(username);
+      if (!res || res.err) {
+        dispatch(actions.setError(res.err.message || 'Fetch Projects failed!'));
+        return;
+      }
+      const projects = res.response.projectsList;
+      console.log(projects)
+      const project = projects.find(project => project.id == projectId)
+      setProjectName(project && project.name);
+    }
+  }
+
   const fetch = async () => {
     await fetchComapnies();
     await fetchObjects();
+    await fetchProjects();
   }
 
   const createObject = async () => {
@@ -62,14 +81,23 @@ const Project = (props) => {
   }
 
   const goUpdateObject = (objectId) => {
-    history.push(`/updateobject/${objectId}`);
+    history.push(`/updateobject/${projectId}/${objectId}`);
+  }
+  
+  const signout = async () => {
+    await auth.signOut();
+    history.push('/signin');
+  }
+
+  const checkApproved = (object) => {
+    return (object.latestVersion !== object.pendingVersion && !object.isPrimary);
   }
 
   return (
     <div className="container d-flex flex-column">
       <div className="menu">
-        <span className="font-14">Home</span>
-        <Link to="/signin" className="font-14">Log Out</Link>
+        <a onClick={() => history.push('/home')} className="font-14">Home</a>
+        <a onClick={signout} className="font-14">Log Out</a>
       </div>
       <div className="page-header">
         <span className="font-36 font-bold">Dashboard</span>
@@ -151,9 +179,9 @@ const Project = (props) => {
                     <span className={"home-project-name bg " + (object.isPrimary ? "bg-active" : "")}>{object.name}</span>
                   </div>
                 </td>
-                <td><div className={'bg object-version ' + ((object.latestVersion !== object.pendingVersion) ? 'bg-dark' : '')}>{(object.latestVersion !== object.pendingVersion) && object.latestVersion}</div></td>
-                <td className='object-push text-center'><span onClick={() => approveObject(object.objectId)}>{(object.latestVersion !== object.pendingVersion) && 'Push'}</span></td>
-                <td><div className={'bg object-version ' + (object.isPrimary ? "bg-active" : "bg-dark")}>{object.pendingVersion}</div></td>
+                <td><div className={'bg object-version ' + (checkApproved(object) ? 'bg-dark' : '')}>{(checkApproved(object)) && object.latestVersion}</div></td>
+                <td className='object-push text-center'><span onClick={() => approveObject(object.objectId)}>{(checkApproved(object)) && 'Push'}</span></td>
+                <td><div className={'bg object-version ' + (object.isPrimary ? "bg-active" : "bg-dark")}>{checkApproved(object) ? object.pendingVersion : object.latestVersion}</div></td>
               </tr>
             ))}
           </tbody>

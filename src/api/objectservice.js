@@ -1,7 +1,7 @@
 import { API_URL } from '../config';
 
 import { Company } from '../proto/company_pb';
-import { GetAllObjectsInProjectForUserRequest, AddCompanyToObjectRequest, GetAllCompaniesInObjectRequest, UpdateObjectVersionRequest, ApproveObjectVersionRequest } from '../proto/object_service_pb';
+import { GetAllObjectsInProjectForUserRequest, AddCompanyToObjectRequest, GetAllCompaniesInObjectRequest, UpdateObjectVersionRequest, ApproveObjectVersionRequest, RemoveCompanyInObjectRequest } from '../proto/object_service_pb';
 import { ObjectServceClient } from '../proto/object_service_grpc_web_pb';
 
 const client = new ObjectServceClient(API_URL, null, null);
@@ -32,6 +32,22 @@ export default {
       })
     })
   },
+  RemoveCompanyInObject: ({objectId, company}) => {
+    return new Promise(resolve => {
+      const request = new RemoveCompanyInObjectRequest();
+      request.setObjectId(objectId);
+      const com = new Company();
+      com.setUsername(company.username);
+      com.setCompanyName(company.companyName);
+      com.setRole(company.role);
+      request.setCompany(com);
+      console.log(request, company)
+      client.removeCompanyInObject(request, {}, (err, response) => {
+        console.log(err, response)
+        resolve({ err, response });
+      })
+    })
+  },
   GetAllCompaniesInObject: (objectId) => {
     return new Promise(resolve => {
       const request = new GetAllCompaniesInObjectRequest();
@@ -50,9 +66,11 @@ export default {
       request.setUsername(username);
       request.setUpdatedName(name);
       request.setUpdatedVersion(version);
+      console.log(request)
 
       client.updateObjectVersion(request, {}, (err, response) => {
         if (err) return resolve({ err, response });
+        console.log(err, response)
         resolve({ err, response: response.toObject() });
       })
     })

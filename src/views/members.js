@@ -5,12 +5,14 @@ import { Edit } from '@material-ui/icons';
 import { Input } from '@material-ui/core';
 import { actions } from '../redux/_actions';
 import projectservice from '../api/projectservice';
+import { useAuth } from '../Auth';
 
 const Signin = (props) => {  
   const [projectId, setProjectId] = useState('');
   const [companies, setCompanies] = useState([]);
   const [allCompanies, setAllCompanies] = useState([]);
   const [searchCompanies, setSearchCompanies] = useState([]);
+  const { auth } = useAuth();
 
   const { username, role, company, projectName } = useSelector(state => state.auth);
   const dispatch = useDispatch();
@@ -39,6 +41,11 @@ const Signin = (props) => {
     setCompanies(res.response.companiesList)
   }
 
+  const signout = async () => {
+    await auth.signOut();
+    history.push('/signin');
+  }
+
   const fetchAllCompanies = async () => {
     const res = await projectservice.GetAllCompanies();
     if (!res || res.err) {
@@ -58,6 +65,12 @@ const Signin = (props) => {
     await fetch();
   }
 
+  const removeCompany = async (idx) => {
+    console.log(idx)
+    await projectservice.RemoveCompanyInProject({ projectId, company: companies[idx] })
+    await fetch();
+  }
+
   const goTeamMembers = () => {
     history.push('/members');
   }
@@ -65,8 +78,8 @@ const Signin = (props) => {
   return (
     <div className="container d-flex flex-column">
       <div className="menu">
-        <span className="font-14">Home</span>
-        <Link to="/signin" className="font-14">Log Out</Link>
+        <a onClick={() => history.push('/home')} className="font-14">Home</a>
+        <a onClick={signout} className="font-14">Log Out</a>
       </div>
       <div className="page-header">
         <span className="font-36 font-bold">EDIT TEAM MEMBERS</span>
@@ -103,7 +116,9 @@ const Signin = (props) => {
                     <span>{company.role}</span>
                   </div>
                 </td>
-                <td className='text-center text-decoration'><div className="button">{(company.username.toLocaleLowerCase() !== username) && 'Remove'}</div></td>
+                <td className='text-center text-decoration'><div className="button" onClick={() => removeCompany(idx)}>
+                  {(company.username.toLocaleLowerCase() !== username) && 'Remove'}
+                  </div></td>
               </tr>
             ))}
           </tbody>

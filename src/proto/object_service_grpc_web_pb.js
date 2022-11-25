@@ -201,6 +201,67 @@ proto.services.ObjectServcePromiseClient.prototype.addCompanyToObject =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.services.RemoveCompanyInObjectRequest,
+ *   !proto.services.RemoveCompanyInObjectResponse>}
+ */
+const methodDescriptor_ObjectServce_RemoveCompanyInObject = new grpc.web.MethodDescriptor(
+  '/services.ObjectServce/RemoveCompanyInObject',
+  grpc.web.MethodType.UNARY,
+  proto.services.RemoveCompanyInObjectRequest,
+  proto.services.RemoveCompanyInObjectResponse,
+  /**
+   * @param {!proto.services.RemoveCompanyInObjectRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.services.RemoveCompanyInObjectResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.services.RemoveCompanyInObjectRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.services.RemoveCompanyInObjectResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.services.RemoveCompanyInObjectResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.services.ObjectServceClient.prototype.removeCompanyInObject =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/services.ObjectServce/RemoveCompanyInObject',
+      request,
+      metadata || {},
+      methodDescriptor_ObjectServce_RemoveCompanyInObject,
+      callback);
+};
+
+
+/**
+ * @param {!proto.services.RemoveCompanyInObjectRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.services.RemoveCompanyInObjectResponse>}
+ *     Promise that resolves to the response
+ */
+proto.services.ObjectServcePromiseClient.prototype.removeCompanyInObject =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/services.ObjectServce/RemoveCompanyInObject',
+      request,
+      metadata || {},
+      methodDescriptor_ObjectServce_RemoveCompanyInObject);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.services.GetAllCompaniesInObjectRequest,
  *   !proto.services.GetAllCompaniesInObjectResponse>}
  */
