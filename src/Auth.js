@@ -20,6 +20,7 @@ export function AuthProvider({children}) {
   const dispatch = useDispatch();
 
   const setUserInfo = async (user) => {
+    if (!user) return;
     const username = user.username;
     const res = await userservice.GetCompanyInfo(username);
     if(res.err) return;

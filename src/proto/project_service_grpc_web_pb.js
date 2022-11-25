@@ -320,5 +320,66 @@ proto.services.ProjectServicePromiseClient.prototype.createObjectInProject =
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.services.RemoveCompanyInProjectRequest,
+ *   !proto.services.RemoveCompanyInProjectResponse>}
+ */
+const methodDescriptor_ProjectService_RemoveCompanyInProject = new grpc.web.MethodDescriptor(
+  '/services.ProjectService/RemoveCompanyInProject',
+  grpc.web.MethodType.UNARY,
+  proto.services.RemoveCompanyInProjectRequest,
+  proto.services.RemoveCompanyInProjectResponse,
+  /**
+   * @param {!proto.services.RemoveCompanyInProjectRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.services.RemoveCompanyInProjectResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.services.RemoveCompanyInProjectRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.services.RemoveCompanyInProjectResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.services.RemoveCompanyInProjectResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.services.ProjectServiceClient.prototype.removeCompanyInProject =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/services.ProjectService/RemoveCompanyInProject',
+      request,
+      metadata || {},
+      methodDescriptor_ProjectService_RemoveCompanyInProject,
+      callback);
+};
+
+
+/**
+ * @param {!proto.services.RemoveCompanyInProjectRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.services.RemoveCompanyInProjectResponse>}
+ *     Promise that resolves to the response
+ */
+proto.services.ProjectServicePromiseClient.prototype.removeCompanyInProject =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/services.ProjectService/RemoveCompanyInProject',
+      request,
+      metadata || {},
+      methodDescriptor_ProjectService_RemoveCompanyInProject);
+};
+
+
 module.exports = proto.services;
 

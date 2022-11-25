@@ -5,10 +5,12 @@ import { Input } from '@material-ui/core';
 import { useSelector, useDispatch } from "react-redux"
 import userservice from '../api/userservice';
 import { actions } from '../redux/_actions';
+import { useAuth } from '../Auth';
 
 const Signin = () => {  
   const [projects, setProjects] = useState([]);
   const [projectName, setProjectName] = useState('');
+  const { auth } = useAuth();
   
   const { username, role, company } = useSelector(state => state.auth);
   const dispatch = useDispatch();
@@ -40,11 +42,16 @@ const Signin = () => {
     fetchProjects();
   }
 
+  const signout = async () => {
+    await auth.signOut();
+    history.push('/signin');
+  }
+
   return (
     <div className="container d-flex flex-column">
       <div className="menu">
         <span className="font-14">Home</span>
-        <Link to="/signin" className="font-14">Log Out</Link>
+        <a onClick={signout} className="font-14">Log Out</a>
       </div>
       <div className="page-header">
         <span className="font-36 font-bold">Home</span>
