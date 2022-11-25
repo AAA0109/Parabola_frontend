@@ -71,7 +71,5 @@ export function AuthProvider({children}) {
     signOut
   };
 
-  console.log('Auth Provider', value)
-
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

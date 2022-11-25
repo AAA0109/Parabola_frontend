@@ -218,6 +218,11 @@ a {
   height: 15px;
 }
 
+.icon-btn span {
+  font-size: 18px;
+  line-height: 14px;
+}
+
 .project-content {
   display: flex;
   align-items: flex-start;

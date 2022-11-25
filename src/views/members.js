@@ -1,10 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux"
 import { Edit } from '@material-ui/icons';
 import { Input } from '@material-ui/core';
+import { actions } from '../redux/_actions';
+import projectservice from '../api/projectservice';
 
-const Signin = () => {  
+const Signin = (props) => {  
+  const [projectId, setProjectId] = useState('');
+  const [companies, setCompanies] = useState([]);
+  const [allCompanies, setAllCompanies] = useState([]);
+  const [searchCompanies, setSearchCompanies] = useState([]);
+
+  const { username, role, company, projectName } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
   const history = useHistory();
+
+  useEffect(() => {
+    setProjectId(props.match.params.projectId);
+    if (!projectId || !username) return;
+    fetch();
+  }, [projectId, username])
+
+  useEffect(() => {
+    const com = allCompanies;
+    setSearchCompanies(com.filter(itm => {
+      const idx = companies.findIndex(com => com.username === itm.username);
+      return idx === -1
+    }))
+  }, [companies, allCompanies])
+
+  const fetchCompanies = async () => {
+    const res = await projectservice.GetAllCompaniesInProject(projectId);
+    if (!res || res.err) {
+      dispatch(actions.setError(res.err.message || 'Fetch CompaniesInProject failed!'));
+      return;
+    }
+    setCompanies(res.response.companiesList)
+  }
+
+  const fetchAllCompanies = async () => {
+    const res = await projectservice.GetAllCompanies();
+    if (!res || res.err) {
+      dispatch(actions.setError(res.err.message || 'Fetch AllCompanies failed!'));
+      return;
+    }
+    setAllCompanies(res.response.companiesList)
+  }
+
+  const fetch = async () => {
+    await fetchCompanies();
+    await fetchAllCompanies();
+  }
+
+  const addCompany = async (idx) => {
+    await projectservice.AddCompanyToProject({ projectId, company: searchCompanies[idx] })
+    await fetch();
+  }
 
   const goTeamMembers = () => {
     history.push('/members');
@@ -22,11 +74,11 @@ const Signin = () => {
       <div className="detail">
         <div className='detail-group'>
           <div className='detail-label'>COMPANY</div>
-          <div className='detail-value'>ROCKWELL GROUP</div>
+          <div className='detail-value'>{company}</div>
         </div>
         <div className='detail-group'>
           <div className='detail-label'>ROLE</div>
-          <div className='detail-value'>INTERIOR DESIGN</div>
+          <div className='detail-value'>{role}</div>
         </div>
       </div>
       <div className="main-content members-content">
@@ -42,42 +94,25 @@ const Signin = () => {
             <tr className='has-head'>
               <td colSpan={2}>TEAM MEMBERS</td>
             </tr>
-            <tr>
-              <td className='text-right'>1.</td>
-              <td>
-                <div className='project-item bg'>
-                  <span>Rockwell Group</span>
-                  <span>Interior Design</span>
-                </div>
-              </td>
-              <td className='text-center text-decoration'><div className="button">Remove</div></td>
-            </tr>
-            <tr>
-              <td className='text-right'>2.</td>
-              <td>
-                <div className='project-item bg'>
-                  <span>Rockwell Group</span>
-                  <span>Interior Design</span>
-                </div>
-              </td>
-              <td className='text-center text-decoration'><div className="button">Remove</div></td>
-            </tr>
-            <tr>
-              <td className='text-right'>3.</td>
-              <td>
-                <div className='project-item bg'>
-                  <span>Rockwell Group</span>
-                  <span>Interior Design</span>
-                </div>
-              </td>
-              <td className='text-center text-decoration'><div className="button">Remove</div></td>
-            </tr>
+            {companies.map((company, idx) => (
+              <tr key={idx}>
+                <td className='text-right'>{idx + 1}.</td>
+                <td>
+                  <div className='project-item bg'>
+                    <span>{company.companyName}</span>
+                    <span>{company.role}</span>
+                  </div>
+                </td>
+                <td className='text-center text-decoration'><div className="button">{(company.username.toLocaleLowerCase() !== username) && 'Remove'}</div></td>
+              </tr>
+            ))}
           </tbody>
         </table>
         <table className='table'>
           <thead>
             <tr>
-              <th width="310"></th>
+              <th width="20"></th>
+              <th width="320"></th>
               <th width="50"></th>
             </tr>
           </thead>
@@ -85,17 +120,25 @@ const Signin = () => {
             <tr className='has-head'>
               <td colSpan={2}>SEARCH</td>
             </tr>
-            <tr>
-              <td><div className='bg'></div></td>
-              <td className='text-center text-decoration'><div className="button">Add</div></td>
-            </tr>
+            {searchCompanies.map((company, idx) => (
+              <tr key={idx}>
+                <td className='text-right'>{idx + 1}.</td>
+                <td>
+                  <div className='project-item bg'>
+                    <span>{company.companyName}</span>
+                    <span>{company.role}</span>
+                  </div>
+                </td>
+                <td className='text-center text-decoration'><div className="button" onClick={() => addCompany(idx)}>Add</div></td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-      <div className='buttons'>
+      {/* <div className='buttons'>
         <div className='save-btn'>Save</div>
         <div className='cancel-btn'>Cancel</div>
-      </div>
+      </div> */}
     </div>
   )
 }

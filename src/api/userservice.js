@@ -16,11 +16,9 @@ export default {
   
       const request = new SignupRequest();
       request.setCompany(com);
-      console.log(request)
   
       client.signup(request, {}, (err, response) => {
         resolve({ err, response });
-        console.log(err, response);
       })
     })
   },
@@ -28,12 +26,9 @@ export default {
     return new Promise(resolve => {
       const request = new GetCompanyInfoRequest();
       request.setUsername(username);
-      console.log(request)
 
       client.getCompanyInfo(request, {}, (err, response) => {
-        console.log(err, response);
-        if (err)
-          return resolve({ err, response });
+        if (err) return resolve({ err, response });
         const com = response.getCompany();
         const username = com.getUsername();
         const company = com.getCompanyName();
@@ -48,24 +43,23 @@ export default {
       request.setUsername(username);
 
       client.getAllProjects(request, {}, (err, response) => {
-        resolve({ err, response });
-        console.log(err, response);
+        if (err) return resolve({ err, response });
+        resolve({ err, response: response.toObject() });
       })
     })
   },
-  CreateProjectRequest: (project_name, username, company, role) => {
+  CreateProject: ({projectName, company}) => {
     return new Promise(resolve => {
       const request = new CreateProjectRequest();
-      request.setProjectName(project_name);
+      request.setProjectName(projectName);
       const com = new Company();
-      com.setUsername(username);
-      com.setCompanyName(company);
-      com.setRole(role);
+      com.setUsername(company.username);
+      com.setCompanyName(company.company);
+      com.setRole(company.role);
       request.setCompany(com);
 
-      client.getAllProjectsRequest(request, {}, (err, response) => {
+      client.createProject(request, {}, (err, response) => {
         resolve({ err, response });
-        console.log(err, response);
       })
     })
   }
