@@ -1,4 +1,5 @@
 export const Constants = {
+  SETUSER: 'SET_USER',
   SIGNIN: 'SIGN_IN',
   SIGNIN_SUCCESS: 'SIGNIN_SUCCESS',
   SIGNIN_FAILED: 'SIGNIN_FAILED',

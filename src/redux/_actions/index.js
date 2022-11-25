@@ -6,7 +6,15 @@ export const actions = {
   signin,
   signout,
   verify,
+  setUser,
   setError
+}
+
+function setUser(data) {
+  return {
+    type: Constants.SETUSER,
+    payload: data
+  }
 }
 
 function signin(data) {

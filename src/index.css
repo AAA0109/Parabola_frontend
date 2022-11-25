@@ -282,3 +282,10 @@ a {
 .first-column {
   width: 320px;
 }
+
+.error-msg {
+  background-color: #ff5539;
+  padding: 10px 30px;
+  border-radius: 20px;
+  color: white;
+}

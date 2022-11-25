@@ -2,9 +2,10 @@ import { combineReducers } from 'redux';
 import { Constants } from '../_constants';
 
 let user = {
-    email: '',
-    _id: '',
-    error: ''
+  username: '',
+  company: '',
+  role: '',
+  error: ''
 }
 // let token = localStorage.getItem('token');
 
@@ -14,6 +15,11 @@ const initialState = () => user
 function auth(state = initialState(), action) {
   console.log(action);
   switch (action.type) {
+    case Constants.SETUSER:
+      return {
+        ...user,
+        ...action.payload
+      }
     case Constants.SIGNIN_SUCCESS:
     case Constants.VERIFY:
       return {

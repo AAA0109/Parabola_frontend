@@ -1,1 +1,1 @@
-exports.API_URL = 'http://localhost:9000'
+exports.API_URL = 'http://parabolaloadbalancer-1492881441.us-west-1.elb.amazonaws.com:8080/'

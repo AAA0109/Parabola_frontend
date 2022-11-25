@@ -140,6 +140,67 @@ proto.services.UserServicePromiseClient.prototype.signup =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.services.GetCompanyInfoRequest,
+ *   !proto.services.GetCompanyInfoResponse>}
+ */
+const methodDescriptor_UserService_GetCompanyInfo = new grpc.web.MethodDescriptor(
+  '/services.UserService/GetCompanyInfo',
+  grpc.web.MethodType.UNARY,
+  proto.services.GetCompanyInfoRequest,
+  proto.services.GetCompanyInfoResponse,
+  /**
+   * @param {!proto.services.GetCompanyInfoRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.services.GetCompanyInfoResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.services.GetCompanyInfoRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.services.GetCompanyInfoResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.services.GetCompanyInfoResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.services.UserServiceClient.prototype.getCompanyInfo =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/services.UserService/GetCompanyInfo',
+      request,
+      metadata || {},
+      methodDescriptor_UserService_GetCompanyInfo,
+      callback);
+};
+
+
+/**
+ * @param {!proto.services.GetCompanyInfoRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.services.GetCompanyInfoResponse>}
+ *     Promise that resolves to the response
+ */
+proto.services.UserServicePromiseClient.prototype.getCompanyInfo =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/services.UserService/GetCompanyInfo',
+      request,
+      metadata || {},
+      methodDescriptor_UserService_GetCompanyInfo);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.services.GetAllProjectsRequest,
  *   !proto.services.GetAllProjectsResponse>}
  */
