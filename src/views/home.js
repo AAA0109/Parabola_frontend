@@ -42,6 +42,11 @@ const Signin = () => {
     fetchProjects();
   }
 
+  const changeProjectName = (idx, name) => {
+    projects[idx].name = name;
+    setProjects([...projects]);
+  }
+
   const signout = async () => {
     await auth.signOut();
     history.push('/signin');
@@ -82,7 +87,8 @@ const Signin = () => {
                 <td>{idx + 1}.</td>
                 <td>
                   <div className='home-project-item'>
-                    <span className="home-project-name bg bg-active">{project.name}</span>
+                    {/* <span className="home-project-name bg bg-active">{project.name}</span> */}
+                    <Input className="input-text home-project-name bg bg-active" value={project.name} onChange={(e) => changeProjectName(idx, e.target.value)}/>
                     <span className="icon-btn bg bg-dark">
                       <Edit />
                     </span>

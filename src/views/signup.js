@@ -61,7 +61,7 @@ const Signup = () => {
             <Input className='input-text' value={role} onChange={e => setRole(e.target.value)}/>
           </div>
           <div className='sign-btn-container'>
-            <div className="button" onClick={signup}>Sign UP</div>
+            <div className="button" onClick={signup}>SIGN UP</div>
           </div>
         </div>
       </div>

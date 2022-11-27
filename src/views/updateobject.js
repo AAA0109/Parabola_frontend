@@ -140,7 +140,7 @@ const UpdateObject = (props) => {
                       <span>{company.role}</span>
                     </div>
                   </td>
-                  <td className='text-center text-decoration'><div className="button" onClick={() => {removeCompany(idx)}}>Remove</div></td>
+                  <td className='text-center text-decoration'><div className="button" onClick={() => {removeCompany(idx)}}>{(company.username.toLocaleLowerCase() !== username) && 'Remove'}</div></td>
                 </tr>
               ))}
             </tbody>
