@@ -138,7 +138,7 @@ const Project = (props) => {
             <tr className='has-head'>
               <td colSpan={2}>PRIMARY OBJECT</td>
             </tr>
-            {objects.map((object, idx) => object.isPrimary && (
+            {objects.filter(itm => itm.isPrimary).map((object, idx) => (
               <tr key={idx}>
                 <td className='text-right'>{idx + 1}.</td>
                 <td>

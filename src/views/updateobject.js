@@ -164,7 +164,7 @@ const UpdateObject = (props) => {
           <div className='detail-value'>{role}</div>
         </div>
       </div>
-      <div className="main-content project-content">
+      <div className="main-content project-content update-object-table">
         <table className='table'>
           <thead>
             <tr>
@@ -199,7 +199,7 @@ const UpdateObject = (props) => {
             <tr className='has-head'>
               <td colSpan={2}>AFFILIATED PARTIES</td>
             </tr>
-            {companies.map((company, idx) => (
+            {companies.map((company, idx) => (company.username.toLocaleLowerCase() !== username) && (
               <tr key={idx}>
                 <td className='text-right'>{idx + 1}.</td>
                 <td>
@@ -208,7 +208,7 @@ const UpdateObject = (props) => {
                     <span>{company.role}</span>
                   </div>
                 </td>
-                <td className='text-center text-decoration'><div className="button" onClick={() => {removeCompany(idx)}}>{(company.username.toLocaleLowerCase() !== username) && 'Remove'}</div></td>
+                <td className='text-center text-decoration'><div className="button" onClick={() => {removeCompany(idx)}}>Remove</div></td>
               </tr>
             ))}
             <tr>
