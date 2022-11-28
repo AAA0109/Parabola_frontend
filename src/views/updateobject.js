@@ -17,6 +17,7 @@ const UpdateObject = (props) => {
   const [originalCompanies, setOriginalCompanies] = useState([]);
   const [allCompanies, setAllCompanies] = useState([]);
   const [searchCompanies, setSearchCompanies] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const { auth } = useAuth();
 
   const { username, role, company, projectName } = useSelector(state => state.auth);
@@ -164,88 +165,41 @@ const UpdateObject = (props) => {
         </div>
       </div>
       <div className="main-content project-content">
-        <div className="first-column">
-          <table className='table'>
-            <thead>
-              <tr>
-                <th width="130"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className='has-head'>
-                <td>OBJECT NAME</td>
-              </tr>
-              <tr>
-                <td>
-                  <div className='home-project-item'>
-                    <Input className="home-project-name font-20 input-text" value={objectName} onChange={(e) => setObjectName(e.target.value)} />
-                    <span className="icon-btn bg bg-dark" onClick={UpdateObject}>
-                      <Edit />
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <table className='table' style={{marginTop: '30px'}}>
-            <thead>
-              <tr>
-                <th width="150"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className='has-head'>
-                <td>CURRENT VERSION</td>
-              </tr>
-              <tr>
-                <td>
-                  <span className="font-20">{objectVersion}</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div style={{marginRight: '100px'}}>
-          <table className='table'>
-            <thead>
-              <tr>
-                <th width="20"></th>
-                <th width="320"></th>
-                <th width="50"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className='has-head'>
-                <td colSpan={2}>AFFILIATED PARTIES</td>
-              </tr>
-              {companies.map((company, idx) => (
-                <tr key={idx}>
-                  <td className='text-right'>{idx + 1}.</td>
-                  <td>
-                    <div className='project-item bg'>
-                      <span>{company.companyName}</span>
-                      <span>{company.role}</span>
-                    </div>
-                  </td>
-                  <td className='text-center text-decoration'><div className="button" onClick={() => {removeCompany(idx)}}>{(company.username.toLocaleLowerCase() !== username) && 'Remove'}</div></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <table className='table'>
+          <thead>
+            <tr>
+              <th width="100"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className='has-head'>
+              <td>OBJECT NAME</td>
+            </tr>
+            <tr>
+              <td>
+                <div className='home-project-item'>
+                  <Input className="home-project-name font-20 input-text" value={objectName} onChange={(e) => setObjectName(e.target.value)} />
+                  <span className="icon-btn bg bg-dark" onClick={UpdateObject}>
+                    <Edit />
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
         <table className='table'>
           <thead>
             <tr>
               <th width="20"></th>
-              <th width="320"></th>
+              <th width="300"></th>
               <th width="50"></th>
             </tr>
           </thead>
           <tbody>
             <tr className='has-head'>
-              <td colSpan={2}>SEARCH</td>
+              <td colSpan={2}>AFFILIATED PARTIES</td>
             </tr>
-            {searchCompanies.map((company, idx) => (
+            {companies.map((company, idx) => (
               <tr key={idx}>
                 <td className='text-right'>{idx + 1}.</td>
                 <td>
@@ -254,11 +208,73 @@ const UpdateObject = (props) => {
                     <span>{company.role}</span>
                   </div>
                 </td>
-                <td className='text-center text-decoration'><div className="button" onClick={() => addCompany(idx)}>Add</div></td>
+                <td className='text-center text-decoration'><div className="button" onClick={() => {removeCompany(idx)}}>{(company.username.toLocaleLowerCase() !== username) && 'Remove'}</div></td>
               </tr>
             ))}
+            <tr>
+              <td></td>
+              <td className='bg'></td>
+              <td>
+                <div className='home-project-item'>
+                  <span className="icon-btn bg bg-dark" onClick={() => setShowModal(true)}>
+                    <span>+</span>
+                  </span>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
+        <div className={'update-object-right ' + (showModal ? 'tab' : '')}>
+          {!showModal &&
+            <table className='table'>
+              <thead>
+                <tr>
+                  <th width="150"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className='has-head'>
+                  <td>CURRENT VERSION</td>
+                </tr>
+                <tr>
+                  <td>
+                    <span className="font-20">{objectVersion}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table> }
+          {showModal &&
+            <>
+              <table className='table'>
+                <thead>
+                  <tr>
+                    <th width="20"></th>
+                    <th width="300"></th>
+                    <th width="50"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className='has-head'>
+                    <td colSpan={2}>SEARCH</td>
+                  </tr>
+                  {searchCompanies.map((company, idx) => (
+                    <tr key={idx}>
+                      <td className='text-right'>{idx + 1}.</td>
+                      <td>
+                        <div className='project-item bg'>
+                          <span>{company.companyName}</span>
+                          <span>{company.role}</span>
+                        </div>
+                      </td>
+                      <td className='text-center text-decoration'><div className="button" onClick={() => addCompany(idx)}>Add</div></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className='close-btn' style={{marginTop: '50px'}} onClick={() => setShowModal(false)}>Close</div>
+            </>
+          }
+        </div>
       </div>
       {/* <div style={{marginTop: '100px'}}>        
         <table className='table'>
