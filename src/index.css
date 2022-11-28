@@ -317,6 +317,7 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: none;
 }
 
 .update-object-right.tab {
