@@ -67,8 +67,9 @@ const Project = (props) => {
   }
 
   const createObject = async () => {
-    await projectservice.CreateObjectInProject({ projectId, objectName, username });
-    await fetchObjects();
+    // await projectservice.CreateObjectInProject({ projectId, objectName, username });
+    // await fetchObjects();
+    history.push(`/updateobject/${projectId}/0`)
   }
 
   const approveObject = async (objectId) => {
@@ -145,7 +146,9 @@ const Project = (props) => {
               <td></td>
               <td>
                 <div className='home-project-item'>
-                  <span className="home-project-name"><Input className='input-text' value={objectName} onChange={e => setObjectName(e.target.value)}/></span>
+                  <span className="home-project-name bg">&nbsp;
+                    {/* <Input className='input-text' value={objectName} onChange={e => setObjectName(e.target.value)}/> */}
+                  </span>
                   <span className="icon-btn bg bg-dark" onClick={createObject}>
                     <span>+</span>
                   </span>

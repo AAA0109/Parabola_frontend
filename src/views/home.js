@@ -47,6 +47,11 @@ const Signin = () => {
     setProjects([...projects]);
   }
 
+  const updateProjectName = async (idx) => {
+    await userservice.UpdateProject({ projectId: projects[idx].id, projectName: projects[idx].name });
+    // await fetch();
+  }
+
   const signout = async () => {
     await auth.signOut();
     history.push('/signin');
@@ -89,7 +94,7 @@ const Signin = () => {
                   <div className='home-project-item'>
                     {/* <span className="home-project-name bg bg-active">{project.name}</span> */}
                     <Input className="input-text home-project-name bg bg-active" value={project.name} onChange={(e) => changeProjectName(idx, e.target.value)}/>
-                    <span className="icon-btn bg bg-dark">
+                    <span className="icon-btn bg bg-dark" onClick={() => updateProjectName(idx)}>
                       <Edit />
                     </span>
                   </div>

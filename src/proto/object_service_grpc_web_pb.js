@@ -262,6 +262,67 @@ proto.services.ObjectServcePromiseClient.prototype.removeCompanyInObject =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.services.DeleteObjectRequest,
+ *   !proto.services.DeleteObjectResponse>}
+ */
+const methodDescriptor_ObjectServce_DeleteObject = new grpc.web.MethodDescriptor(
+  '/services.ObjectServce/DeleteObject',
+  grpc.web.MethodType.UNARY,
+  proto.services.DeleteObjectRequest,
+  proto.services.DeleteObjectResponse,
+  /**
+   * @param {!proto.services.DeleteObjectRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.services.DeleteObjectResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.services.DeleteObjectRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.services.DeleteObjectResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.services.DeleteObjectResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.services.ObjectServceClient.prototype.deleteObject =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/services.ObjectServce/DeleteObject',
+      request,
+      metadata || {},
+      methodDescriptor_ObjectServce_DeleteObject,
+      callback);
+};
+
+
+/**
+ * @param {!proto.services.DeleteObjectRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.services.DeleteObjectResponse>}
+ *     Promise that resolves to the response
+ */
+proto.services.ObjectServcePromiseClient.prototype.deleteObject =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/services.ObjectServce/DeleteObject',
+      request,
+      metadata || {},
+      methodDescriptor_ObjectServce_DeleteObject);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.services.GetAllCompaniesInObjectRequest,
  *   !proto.services.GetAllCompaniesInObjectResponse>}
  */

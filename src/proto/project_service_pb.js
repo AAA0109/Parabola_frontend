@@ -1292,7 +1292,7 @@ proto.services.CreateObjectResponse.prototype.toObject = function(opt_includeIns
  */
 proto.services.CreateObjectResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-
+    objectId: jspb.Message.getFieldWithDefault(msg, 1, 0)
   };
 
   if (includeInstance) {
@@ -1329,6 +1329,10 @@ proto.services.CreateObjectResponse.deserializeBinaryFromReader = function(msg, 
     }
     var field = reader.getFieldNumber();
     switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setObjectId(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1358,6 +1362,31 @@ proto.services.CreateObjectResponse.prototype.serializeBinary = function() {
  */
 proto.services.CreateObjectResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
+  f = message.getObjectId();
+  if (f !== 0) {
+    writer.writeInt32(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional int32 object_id = 1;
+ * @return {number}
+ */
+proto.services.CreateObjectResponse.prototype.getObjectId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.services.CreateObjectResponse} returns this
+ */
+proto.services.CreateObjectResponse.prototype.setObjectId = function(value) {
+  return jspb.Message.setProto3IntField(this, 1, value);
 };
 
 

@@ -1,7 +1,8 @@
 import { API_URL } from '../config';
 
 import { Company } from '../proto/company_pb';
-import { GetAllObjectsInProjectForUserRequest, AddCompanyToObjectRequest, GetAllCompaniesInObjectRequest, UpdateObjectVersionRequest, ApproveObjectVersionRequest, RemoveCompanyInObjectRequest } from '../proto/object_service_pb';
+import { GetAllObjectsInProjectForUserRequest, AddCompanyToObjectRequest, GetAllCompaniesInObjectRequest, UpdateObjectVersionRequest,
+  ApproveObjectVersionRequest, RemoveCompanyInObjectRequest, DeleteObjectRequest } from '../proto/object_service_pb';
 import { ObjectServceClient } from '../proto/object_service_grpc_web_pb';
 
 const client = new ObjectServceClient(API_URL, null, null);
@@ -41,9 +42,7 @@ export default {
       com.setCompanyName(company.companyName);
       com.setRole(company.role);
       request.setCompany(com);
-      console.log(request, company)
       client.removeCompanyInObject(request, {}, (err, response) => {
-        console.log(err, response)
         resolve({ err, response });
       })
     })
@@ -66,11 +65,9 @@ export default {
       request.setUsername(username);
       request.setUpdatedName(name);
       request.setUpdatedVersion(version);
-      console.log(request)
 
       client.updateObjectVersion(request, {}, (err, response) => {
         if (err) return resolve({ err, response });
-        console.log(err, response)
         resolve({ err, response: response.toObject() });
       })
     })
@@ -87,4 +84,16 @@ export default {
       })
     })
   },
+  DeleteObject: (objectId) => {
+    return new Promise(resolve => {
+      const request = new DeleteObjectRequest();
+      request.setObjectId(objectId);
+      console.log(request);
+
+      client.deleteObject(request, {}, (err, response) => {
+        console.log(err,response);
+        resolve({ err, response });
+      })
+    })
+  }
 }
