@@ -43,6 +43,15 @@ const Project = (props) => {
       return;
     }
     console.log('objects', res.response.objectsList);
+
+    const cmp = (a, b) => {
+      if (a.name > b.name) return 1;
+      if (a.name == b.name) return 0;
+      return -1;
+    }
+    console.log(res.response.objectsList)
+    res.response.objectsList.sort(cmp);
+    console.log(res.response.objectsList)
     setObjects(res.response.objectsList)
   }
 
@@ -122,14 +131,14 @@ const Project = (props) => {
           <thead>
             <tr>
               <th width="20"></th>
-              <th width="300"></th>
+              <th width="280"></th>
             </tr>
           </thead>
           <tbody>
             <tr className='has-head'>
               <td colSpan={2}>PRIMARY OBJECT</td>
             </tr>
-            {objects.map((object, idx) => object.isPrimary && (
+            {objects.filter(itm => itm.isPrimary).map((object, idx) => (
               <tr key={idx}>
                 <td className='text-right'>{idx + 1}.</td>
                 <td>
@@ -161,7 +170,7 @@ const Project = (props) => {
           <thead>
             <tr className=''>
               <th width="20"></th>
-              <th width="300"></th>
+              <th width="280"></th>
               <th width="53"></th>
               <th width="50"></th>
               <th width="65"></th>
@@ -193,7 +202,7 @@ const Project = (props) => {
           <thead>
             <tr>
               <th width="20"></th>
-              <th width="320"></th>
+              <th width="300"></th>
             </tr>
           </thead>
           <tbody>
@@ -213,7 +222,7 @@ const Project = (props) => {
                 <td>
                   <div className='project-item bg'>
                     <span>{company.companyName}</span>
-                    <span>{company.Role}</span>
+                    <span>{company.role}</span>
                   </div>
                 </td>
               </tr>
