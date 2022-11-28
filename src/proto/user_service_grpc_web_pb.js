@@ -320,5 +320,127 @@ proto.services.UserServicePromiseClient.prototype.createProject =
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.services.UpdateProjectRequest,
+ *   !proto.services.UpdateProjectResponse>}
+ */
+const methodDescriptor_UserService_UpdateProject = new grpc.web.MethodDescriptor(
+  '/services.UserService/UpdateProject',
+  grpc.web.MethodType.UNARY,
+  proto.services.UpdateProjectRequest,
+  proto.services.UpdateProjectResponse,
+  /**
+   * @param {!proto.services.UpdateProjectRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.services.UpdateProjectResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.services.UpdateProjectRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.services.UpdateProjectResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.services.UpdateProjectResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.services.UserServiceClient.prototype.updateProject =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/services.UserService/UpdateProject',
+      request,
+      metadata || {},
+      methodDescriptor_UserService_UpdateProject,
+      callback);
+};
+
+
+/**
+ * @param {!proto.services.UpdateProjectRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.services.UpdateProjectResponse>}
+ *     Promise that resolves to the response
+ */
+proto.services.UserServicePromiseClient.prototype.updateProject =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/services.UserService/UpdateProject',
+      request,
+      metadata || {},
+      methodDescriptor_UserService_UpdateProject);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.services.DeleteProjectRequest,
+ *   !proto.services.DeleteProjectResponse>}
+ */
+const methodDescriptor_UserService_DeleteProject = new grpc.web.MethodDescriptor(
+  '/services.UserService/DeleteProject',
+  grpc.web.MethodType.UNARY,
+  proto.services.DeleteProjectRequest,
+  proto.services.DeleteProjectResponse,
+  /**
+   * @param {!proto.services.DeleteProjectRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.services.DeleteProjectResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.services.DeleteProjectRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.RpcError, ?proto.services.DeleteProjectResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.services.DeleteProjectResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.services.UserServiceClient.prototype.deleteProject =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/services.UserService/DeleteProject',
+      request,
+      metadata || {},
+      methodDescriptor_UserService_DeleteProject,
+      callback);
+};
+
+
+/**
+ * @param {!proto.services.DeleteProjectRequest} request The
+ *     request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.services.DeleteProjectResponse>}
+ *     Promise that resolves to the response
+ */
+proto.services.UserServicePromiseClient.prototype.deleteProject =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/services.UserService/DeleteProject',
+      request,
+      metadata || {},
+      methodDescriptor_UserService_DeleteProject);
+};
+
+
 module.exports = proto.services;
 

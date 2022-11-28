@@ -14,6 +14,9 @@ const UpdateObject = (props) => {
   const [objectName, setObjectName] = useState('');
   const [objectVersion, setObjectVersion] = useState('');
   const [companies, setCompanies] = useState([]);
+  const [originalCompanies, setOriginalCompanies] = useState([]);
+  const [allCompanies, setAllCompanies] = useState([]);
+  const [searchCompanies, setSearchCompanies] = useState([]);
   const { auth } = useAuth();
 
   const { username, role, company, projectName } = useSelector(state => state.auth);
@@ -26,15 +29,28 @@ const UpdateObject = (props) => {
     if (!objectId || !username) return;
     fetch();
   }, [objectId, projectId, username])
+
+  useEffect(() => {
+    const com = allCompanies;
+    setSearchCompanies(com.filter(itm => {
+      const idx = originalCompanies.findIndex(com => com.username.toLocaleLowerCase() === itm.username.toLocaleLowerCase());
+      return idx === -1
+    }))
+  }, [originalCompanies, allCompanies])
   
   const fetchComapnies = async () => {
+    if (objectId == '0') {
+      setCompanies([{ companyName: company, username: username, role: role }]);
+      setOriginalCompanies([{ companyName: company, username: username, role: role }]);
+      return ;
+    }
     const res = await objectservice.GetAllCompaniesInObject(objectId);
     if (!res || res.err) {
       dispatch(actions.setError(res.err.message || 'Fetch CompaniesInObject failed!'));
       return;
     }
-    console.log(res.response.companiesList);
-    setCompanies(res.response.companiesList)
+    setCompanies([...res.response.companiesList]);
+    setOriginalCompanies([...res.response.companiesList]);
   }
 
   const fetchObjects = async () => {
@@ -45,13 +61,61 @@ const UpdateObject = (props) => {
     }
     const objects = res.response.objectsList;
     const object = objects.find(object => object.objectId == objectId)
-    setObjectName(object && object.name);
-    setObjectVersion(object && object.latestVersion)
+    setObjectName((object && object.name) || '');
+    setObjectVersion((object && object.latestVersion) || '1.0.0')
+  }
+
+  const fetchAllCompanies = async () => {
+    const res = await projectservice.GetAllCompaniesInProject(projectId);
+    if (!res || res.err) {
+      dispatch(actions.setError(res.err.message || 'Fetch AllCompanies failed!'));
+      return;
+    }
+    setAllCompanies(res.response.companiesList)
+  }
+
+  const isInList = (list, com) => {
+    const idx = list.findIndex(itm => itm.username === com.username);
+    return idx > -1;
+  }
+
+  const saveObject = async () => {
+    if (!objectName) {
+      dispatch(actions.setError('Input Object name!'));
+      return;
+    }
+    let id = objectId;
+    if (objectId == '0') {
+      const res = await projectservice.CreateObjectInProject({ projectId, objectName, username });
+      id = res.response.objectId;
+    }
+    for (let i = 0; i < allCompanies.length; i ++) {
+      const com = allCompanies[i];
+      const is_o = isInList(originalCompanies, com),
+        is_a = isInList(companies, com);
+      if (is_o && !is_a) await objectservice.RemoveCompanyInObject({ objectId: id, company: com })
+      if (!is_o && is_a) await objectservice.AddCompanyToObject({ objectId: id, userAdder: username, userAdded: com.username })
+    }
+    await UpdateObject(id);
+    cancelObject();
+  }
+  const deleteObject = async () => {
+    await objectservice.DeleteObject(objectId);
+    cancelObject();
   }
 
   const fetch = async () => {
     await fetchObjects();
     await fetchComapnies();
+    await fetchAllCompanies();
+  }
+
+  const addCompany = async (idx) => {
+    // await objectservice.AddCompanyToObject({ objectId, userAdder: username, userAdded: searchCompanies[idx].username })
+    companies.push(searchCompanies[idx]);
+    searchCompanies.splice(idx, 1);
+    setCompanies([...companies]);
+    setSearchCompanies([...searchCompanies]);
   }
 
   const signout = async () => {
@@ -60,18 +124,24 @@ const UpdateObject = (props) => {
   }
 
   const removeCompany = async (idx) => {
-    console.log(idx)
-    await objectservice.RemoveCompanyInObject({ objectId, company: companies[idx] })
-    await fetch();
+    // await objectservice.RemoveCompanyInObject({ objectId, company: companies[idx] })
+    searchCompanies.push(companies[idx]);
+    companies.splice(idx, 1);
+    setCompanies([...companies]);
+    setSearchCompanies([...searchCompanies]);
   }
 
-  const UpdateObject = async () => {
+  const UpdateObject = async (id) => {
     let version = objectVersion.replace(/\./g, '');
     version = parseFloat(version) + 1 + '';
     version = version[0] + '.' + version[1] + '.' + version[2];
-    await objectservice.UpdateObjectVersion({ objectId, username, name: objectName, version });
-    await fetch();
+    if (objectId == '0') version = '1.0.0';
+    await objectservice.UpdateObjectVersion({ objectId: id || objectId, username, name: objectName, version });
     // setObjectVersion(version)
+  }
+
+  const cancelObject = () => {
+    history.push(`/project/${projectId}`);
   }
 
   return (
@@ -117,6 +187,23 @@ const UpdateObject = (props) => {
               </tr>
             </tbody>
           </table>
+          <table className='table' style={{marginTop: '30px'}}>
+            <thead>
+              <tr>
+                <th width="150"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className='has-head'>
+                <td>CURRENT VERSION</td>
+              </tr>
+              <tr>
+                <td>
+                  <span className="font-20">{objectVersion}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div style={{marginRight: '100px'}}>
           <table className='table'>
@@ -136,7 +223,7 @@ const UpdateObject = (props) => {
                   <td className='text-right'>{idx + 1}.</td>
                   <td>
                     <div className='project-item bg'>
-                      <span>{company.name}</span>
+                      <span>{company.companyName}</span>
                       <span>{company.role}</span>
                     </div>
                   </td>
@@ -149,18 +236,27 @@ const UpdateObject = (props) => {
         <table className='table'>
           <thead>
             <tr>
-              <th width="150"></th>
+              <th width="20"></th>
+              <th width="320"></th>
+              <th width="50"></th>
             </tr>
           </thead>
           <tbody>
             <tr className='has-head'>
-              <td>CURRENT VERSION</td>
+              <td colSpan={2}>SEARCH</td>
             </tr>
-            <tr>
-              <td>
-                <span className="font-20">{objectVersion}</span>
-              </td>
-            </tr>
+            {searchCompanies.map((company, idx) => (
+              <tr key={idx}>
+                <td className='text-right'>{idx + 1}.</td>
+                <td>
+                  <div className='project-item bg'>
+                    <span>{company.companyName}</span>
+                    <span>{company.role}</span>
+                  </div>
+                </td>
+                <td className='text-center text-decoration'><div className="button" onClick={() => addCompany(idx)}>Add</div></td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -185,11 +281,11 @@ const UpdateObject = (props) => {
           </tbody>
         </table>
       </div> */}
-      {/* <div className='buttons'>
-        <div className='save-btn'>Save</div>
-        <div className='delete-btn'>Delete</div>
-        <div className='cancel-btn'>Cancel</div>
-      </div> */}
+      <div className='buttons'>
+        <div className='save-btn' onClick={saveObject}>Save</div>
+        <div className='delete-btn' onClick={deleteObject}>Delete</div>
+        <div className='cancel-btn' onClick={cancelObject}>Cancel</div>
+      </div>
     </div>
   )
 }

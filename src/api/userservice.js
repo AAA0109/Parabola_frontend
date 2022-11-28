@@ -1,7 +1,7 @@
 import { API_URL } from '../config';
 
 import { Company } from '../proto/company_pb';
-import { SignupRequest, GetCompanyInfoRequest, GetAllProjectsRequest, CreateProjectRequest } from '../proto/user_service_pb';
+import { SignupRequest, GetCompanyInfoRequest, GetAllProjectsRequest, CreateProjectRequest, UpdateProjectRequest } from '../proto/user_service_pb';
 import { UserServiceClient } from '../proto/user_service_grpc_web_pb';
 
 const client = new UserServiceClient(API_URL, null, null);
@@ -59,6 +59,17 @@ export default {
       request.setCompany(com);
 
       client.createProject(request, {}, (err, response) => {
+        resolve({ err, response });
+      })
+    })
+  },
+  UpdateProject: ({projectName, projectId}) => {
+    return new Promise(resolve => {
+      const request = new UpdateProjectRequest();
+      request.setProjectName(projectName);
+      request.setProjectId(projectId);
+
+      client.updateProject(request, {}, (err, response) => {
         resolve({ err, response });
       })
     })

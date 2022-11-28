@@ -48,7 +48,7 @@ export default {
       request.setObjectName(objectName);
       request.setUsername(username);
       client.createObjectInProject(request, {}, (err, response) => {
-        resolve({ err, response });
+        resolve({ err, response: response.toObject() });
       })
     })
   },
